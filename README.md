@@ -1,5 +1,8 @@
 # fiae22l_celsius
 
+Alle Packages in requirements.txt
+
+
 ## To-Do
 
 - [ ] Datenbank einrichten SQLite
