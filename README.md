@@ -1,7 +1,7 @@
 # fiae22l_celsius
 
 Alle Packages in requirements.txt
-
+Version Python 3.12
 
 ## To-Do
 
