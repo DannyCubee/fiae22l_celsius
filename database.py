@@ -1,0 +1,1 @@
+# Verbindung zu den Datenbanken, sowie Erstellung eines Session Objekts, welches später in der CRUD angewandt wird
