@@ -5,11 +5,12 @@ Version Python 3.12
 
 ## To-Do
 
-- [ ] Datenbank einrichten SQLite
-- [ ] REST-API programmieren
--   [ ] Datenbankverbindung
--   [ ] API Routen definieren
--   [ ] CRUD Utils erstellen
+- [x] Datenbank einrichten SQLite
+- [ ] REST-API programmieren - 
+-   [x] Datenbankverbindung - 
+-   [ ] API Routen definieren - Pamela
+-   [ ] CRUD Utils erstellen - Niklas/Viktor
+-   [ ] schemas erstellen und Einfügen - Daniel
   
 ## .gitignore
 
