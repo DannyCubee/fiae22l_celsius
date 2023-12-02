@@ -7,5 +7,4 @@ database_name = "temps_db"
 
 connection = sqlite3.connect(database_name)
 
-
 connection.close()

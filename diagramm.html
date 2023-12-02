@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<title>Graphic of the temperature</title>
+<style>
+        /* for graphic */
+        #chart {
+            width: 600px;
+            height: 400px;
+            border: 1px solid #ccc;
+            position: relative;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        /* style for axes */
+        .axis {
+            position: absolute;
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        /* style for points on axes */
+        .point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #002aff;
+        }
+        .axis-label {
+            position: absolute;
+            font-size: 12px;
+            color: #666;
+        }
+</style>
+</head>
+<body>
+<h1>Temperature graphic</h1>
+<div id="chart"></div>
+
+    <script>
+        // Data: time and temperature
+        const data = [
+            { time: '8:00', temperature: 10 },
+            { time: '10:00', temperature: 15 },
+            { time: '12:00', temperature: 20 },
+            { time: '14:00', temperature: 18 },
+            { time: '16:00', temperature: 16 }
+        ];
+
+        // Code for the points on the axes
+        function createPoints() {
+            const chart = document.getElementById('chart');
+            const maxValue = Math.max(...data.map(item => item.temperature));
+            const minValue = Math.min(...data.map(item => item.temperature));
+            const valueRange = maxValue - minValue;
+            const timeInterval = 100 / (data.length - 1);
+
+            data.forEach((point, index) => {
+                const x = index * timeInterval * 5; // Change the distance on the axe X
+                const y = (point.temperature - minValue) / valueRange * 300 +20; // Change the size on the axe X
+
+                const newPoint = document.createElement('div');
+                newPoint.className = 'point';
+                newPoint.style.left = x + 10+ 'px';
+                newPoint.style.bottom = y + 'px';
+
+                chart.appendChild(newPoint);
+
+
+                const timeLabel = document.createElement('div');
+                timeLabel.className = 'axis-label';
+                timeLabel.style.left = x +20 'px';
+                timeLabel.style.bottom = '0';
+                timeLabel.textContent = point.time;
+                chart.appendChild(timeLabel);
+
+                const tempLabel = document.createElement('div');
+                tempLabel.className = 'axis-label';
+                tempLabel.style.left = x + 'px';
+                tempLabel.style.bottom = y + 20 + 'px';
+                tempLabel.textContent = point.temperature + '°C';
+                chart.appendChild(tempLabel);
+            });
+        }
+
+        // Create the graphic by page opening
+        window.onload = createPoints;
+</script>
+</body>
+</html>
