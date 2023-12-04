@@ -7,9 +7,9 @@
 <style>
         /* for graphic */
         #chart {
-            width: 600px;
+            width: 590px;
             height: 400px;
-            border: 1px solid #ccc;
+            border: 3px solid #8d8d8d;
             position: relative;
             padding: 40px;
             box-sizing: border-box;
@@ -36,60 +36,82 @@
             font-size: 12px;
             color: #666;
         }
+        #toggleButton {
+            position: absolute;
+            left: 285px;
+            transform: translateX(-50%);
+            bottom: 55px;
+        }
 </style>
 </head>
 <body>
 <h1>Temperature graphic</h1>
 <div id="chart"></div>
+<button id="toggleButton">Change temperature type</button>
 
     <script>
-        // Data: time and temperature
-        const data = [
-            { time: '8:00', temperature: 10 },
-            { time: '10:00', temperature: 15 },
-            { time: '12:00', temperature: 20 },
-            { time: '14:00', temperature: 18 },
-            { time: '16:00', temperature: 16 }
-        ];
+        let isCelsius = true;
 
-        // Code for the points on the axes
-        function createPoints() {
+        function toggleTemperature() {
             const chart = document.getElementById('chart');
-            const maxValue = Math.max(...data.map(item => item.temperature));
-            const minValue = Math.min(...data.map(item => item.temperature));
-            const valueRange = maxValue - minValue;
-            const timeInterval = 100 / (data.length - 1);
+            const temperatureData = [
+                {time: '8:00', celsius: 10, fahrenheit: 58},
+                {time: '10:00', celsius: 15, fahrenheit: 69},
+                {time: '12:00', celsius: 20, fahrenheit: 46},
+                {time: '14:00', celsius: 18, fahrenheit: 35},
+                {time: '16:00', celsius: 16, fahrenheit: 50}
+            ];
 
-            data.forEach((point, index) => {
-                const x = index * timeInterval * 5; // Change the distance on the axe X
-                const y = (point.temperature - minValue) / valueRange * 300 +20; // Change the size on the axe X
+            //To clear graphic before usage
+            chart.innerHTML = '';
 
-                const newPoint = document.createElement('div');
-                newPoint.className = 'point';
-                newPoint.style.left = x + 35+ 'px';
-                newPoint.style.bottom = y + 10+ 'px';
+            //according to the buttons type give a special list of data
+            const data = isCelsius ? temperatureData.map(item => item.celsius) : temperatureData.map(item => item.fahrenheit);
 
-                chart.appendChild(newPoint);
+            // Code for the points on the axes
+            function createPoints() {
+                const maxValue = Math.max(...data);
+                const minValue = Math.min(...data);
+                const valueRange = maxValue - minValue;
+                const timeInterval = 100 / (data.length - 1);
+
+                data.forEach((temperature, index) => {
+                    const x = index * timeInterval * 5; // Change the distance on the axe X
+                    const y = 320 - ((temperature - minValue) / valueRange) * 300 + 20; // Change the size on the axe X
+
+                    const newPoint = document.createElement('div');
+                    newPoint.className = 'point';
+                    newPoint.style.left = x + 35 + 'px';
+                    newPoint.style.top = y + 25 + 'px';
+
+                    chart.appendChild(newPoint);
 
 
-                const timeLabel = document.createElement('div');
-                timeLabel.className = 'axis-label';
-                timeLabel.style.left = x +30+ 'px';
-                timeLabel.style.bottom = '0';
-                timeLabel.textContent = point.time;
-                chart.appendChild(timeLabel);
+                    const timeLabel = document.createElement('div');
+                    timeLabel.className = 'axis-label';
+                    timeLabel.style.left = x + 30 + 'px';
+                    timeLabel.style.bottom = '0';
+                    timeLabel.textContent = temperatureData[index].time;
+                    chart.appendChild(timeLabel);
 
-                const tempLabel = document.createElement('div');
-                tempLabel.className = 'axis-label';
-                tempLabel.style.left = x +25+ 'px';
-                tempLabel.style.bottom = y + 20 + 'px';
-                tempLabel.textContent = point.temperature + '°C';
-                chart.appendChild(tempLabel);
-            });
+                    const tempLabel = document.createElement('div');
+                    tempLabel.className = 'axis-label';
+                    tempLabel.style.left = x + 25 + 'px';
+                    tempLabel.style.top = y + 10 + 'px';
+                    tempLabel.textContent = isCelsius ? temperature + '°C': temperature + '°F';
+                    chart.appendChild(tempLabel);
+                });
+            }
+
+            createPoints();
         }
+         document.getElementById('toggleButton').addEventListener('click', function() {
+         isCelsius = !isCelsius;
+         toggleTemperature();
+         });
 
         // Create the graphic by page opening
-        window.onload = createPoints;
+    window.onload = toggleTemperature;
 </script>
 </body>
 </html>
