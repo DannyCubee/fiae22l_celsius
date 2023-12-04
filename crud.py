@@ -17,7 +17,20 @@ def read_reading(db: Session):
     pass
 
 
-def delete_reading():
-    pass
+def update_reading(db: Session, id: int): #Responsible for Celsius
+    db.query(models.Readings.temp_c).where(models.Readings.id == id).\
+        update(("temp_c": temp_c, "temp_f": temp_f), synchronize_session="evaluate")
+
+    db.commit()
+
+    return db.query(models.Readings).where(models.Readings.id == id).first()
+
+def delete_reading(db: Session, id: int):
+    db.query(models.Readings).filter(models.Readings.id == id).\
+        delete(synchronize_session=False)
+
+    db.commit()
+
+    return {"msg": f"Temperature with ID:{id} deleted"}
 
 
