@@ -66,22 +66,22 @@
 
                 const newPoint = document.createElement('div');
                 newPoint.className = 'point';
-                newPoint.style.left = x + 10+ 'px';
-                newPoint.style.bottom = y + 'px';
+                newPoint.style.left = x + 35+ 'px';
+                newPoint.style.bottom = y + 10+ 'px';
 
                 chart.appendChild(newPoint);
 
 
                 const timeLabel = document.createElement('div');
                 timeLabel.className = 'axis-label';
-                timeLabel.style.left = x +20 'px';
+                timeLabel.style.left = x +30+ 'px';
                 timeLabel.style.bottom = '0';
                 timeLabel.textContent = point.time;
                 chart.appendChild(timeLabel);
 
                 const tempLabel = document.createElement('div');
                 tempLabel.className = 'axis-label';
-                tempLabel.style.left = x + 'px';
+                tempLabel.style.left = x +25+ 'px';
                 tempLabel.style.bottom = y + 20 + 'px';
                 tempLabel.textContent = point.temperature + '°C';
                 chart.appendChild(tempLabel);
