@@ -13,9 +13,14 @@ def create_reading(db: Session, id: int, temp_c: float, temp_f: float, client: s
     return new_data
 
 
-def read_reading(db: Session):
-    pass
+def read_reading_Ids(db: Session):
+    return db.query(models.id).filter(models.id == id).first()
 
+def read_reading_Celsius(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Readings.temp_c).offset(skip).limit(limit).all()
+
+def read_reading_Fahrenheit(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Readings.temp_f).offset(skip).limit(limit).all()
 
 def update_reading(db: Session, id: int): #Responsible for Celsius
     db.query(models.Readings.temp_c).where(models.Readings.id == id).\
