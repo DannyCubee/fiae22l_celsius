@@ -43,23 +43,22 @@ def read_reading_Temperature(db: Session, id: int, is_celsius: bool) -> float:
         return reading.temp_celsius if is_celsius else reading.temp_fahrenheit
     return None
 
+
 def read_reading_Celsius(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Readings.temp_c).offset(skip).limit(limit).all()
+
 
 def read_reading_Fahrenheit(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Readings.temp_f).offset(skip).limit(limit).all()
 
+
 def read_reading_by_Client(db: Session, client: str) -> list:
     return db.query(models.Readings).filter_by(person=client).all()
+
 
 def read_reading_by_Client_and_Time(db: Session, client: str, time: datetime) -> list:
     return db.query(models.Readings).filter_by(person=client).filter(models.Readings.timestamp <= time).all()
 
-def update_reading(db: Session, id: int): #Responsible for Celsius
-    db.query(models.Readings.temp_c).where(models.Readings.id == id).\
-        update(("temp_c": temp_c, "temp_f": temp_f), synchronize_session="evaluate")
-    db.commit()
-    return db.query(models.Readings).where(models.Readings.id == id).first()
 
 def delete_reading(db: Session, id: int):
     db.query(models.Readings).filter(models.Readings.id == id).\

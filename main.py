@@ -1,9 +1,13 @@
 # Erstellen der API-Routen, sowie der Logik, welche für jeden API-Call ausgeführt wird
 from datetime import datetime
 
+
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
+from fastapi.responses import HTMLResponse
+from fastapi .middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 import models
 import crud
@@ -12,7 +16,20 @@ import schemas
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
@@ -86,6 +103,15 @@ def update_temperature_of_id(temp_c: float, temp_f: float, id: int, db: Session 
     return crud.update_reading(db, id, temp_c, temp_f)
 
 
+
 @app.delete("/api/v1/delete-temperature")
 def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
     return crud.delete_reading(db, id)
+
+@app.get("/index", response_class=HTMLResponse)
+def launch_index():
+    with open("static/index.html", "r") as html:
+        render = html.read()
+
+    return render
+
