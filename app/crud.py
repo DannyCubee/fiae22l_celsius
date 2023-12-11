@@ -1,8 +1,8 @@
 # CRUD Anweisungen für unsere Datenbankabfragen
 
-from sqlalchemy.orm import Session, Query
+from sqlalchemy.orm import Session
 from datetime import datetime
-from . import models, schemas
+from . import models
 
 
 def create_reading(db: Session, id: int, temp_c: float, temp_f: float, client: str):

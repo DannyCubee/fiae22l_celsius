@@ -4,14 +4,14 @@ from datetime import datetime
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine
+from app.database import SessionLocal, engine
 from fastapi.responses import HTMLResponse
 from fastapi .middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-import models
-import crud
-import schemas
+from app import models
+from app import crud
+from app import schemas
 
 models.Base.metadata.create_all(bind=engine)
 
