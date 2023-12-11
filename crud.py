@@ -8,7 +8,6 @@ from . import models, schemas
 
 def create_reading(
         db: Session,
-        id: int,
         temp_c: float,
         temp_f: float,
         client: str,
@@ -28,7 +27,6 @@ def create_reading(
 
 def create_reading(
         db: Session,
-        id: int,
         temp: float,
         einheit: str,
         client: str
@@ -97,15 +95,6 @@ def read_by_Timeframe(db: Session, von: datetime, bis: datetime, skip: int = 0, 
 def read_by_Client_and_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> list:
     return filter_reading(db, client=client, time=time, skip=skip, limit=limit)
 
-def update_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> list:
-    time_input = input("Bitte gebe eine neue Zeit ein: ")
-
-    return filter_reading(db, client=client, time=time_input, skip=skip, limit=limit)
-
-
-
-def delete_Time(db:Session, client: str, id: int, time: datetime, skip: int = 0, limit: int = 100) -> list:
-    return filter_reading(db, client=client, time=None, skip=skip, limit=limit)
 
 def update_reading(
         db: Session,
@@ -133,8 +122,16 @@ def update_reading(
     )
     db.commit()
 
+def update_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> list:
+    time_input = input("Bitte gebe eine neue Zeit ein: ")
+    return filter_reading(db, client=client, time=time_input, skip=skip, limit=limit)
+
+
 def delete_reading(db: Session, id: int) -> None:
     db.query(models.Readings).filter(models.Readings.id == id).\
         delete(synchronize_session=False)
     db.commit()
     return {"msg": f"Temperature with ID:{id} deleted"}
+
+def delete_Time(db:Session, client: str, id: int, time: datetime, skip: int = 0, limit: int = 100) -> list:
+    return filter_reading(db, client=client, time=None, skip=skip, limit=limit)
