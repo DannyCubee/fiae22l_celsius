@@ -2,8 +2,8 @@
 
 from fastapi import FastAPI
 
-import models
-from database import SessionLocal, engine
+from app import models
+from app.database import SessionLocal, engine
 from datetime import datetime
 
 
@@ -15,10 +15,11 @@ from fastapi .middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app import models
+from app.models import Base
 from app import crud
 from app import schemas
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -60,29 +61,23 @@ def create_value():
 
 # noinspection PyTypeChecker
 @app.post("/api/v1/new-temperatures")
-def create_new_temperatures(id: int, temp_c: float, temp_f: float, client: str, db: Session = Depends(get_db)):
-    return crud.create_readings(db, id, temp_c, temp_f, client)
+def create_new_temperatures(temp_c: float, temp_f: float, client: str, db: Session = Depends(get_db)):
+    return crud.create_reading(db, temp_c, temp_f, client)
 
 
-# noinspection PyTypeChecker
-@app.post("/api/v1/new-temperature")
-def create_new_temperature(id: int, temp: float, is_celsius: bool, client: str, db: Session = Depends(get_db)):
-    return crud.create_reading(db, id, temp, client, is_celsius)
-
-
-@app.get("/api/v1/all-temperatures", response_model=schemas.Temperature)
+@app.get("/api/v1/all-temperatures")
 def get_all_temperatures(db: Session = Depends(get_db)):
     return crud.read_reading(db)
 
 
-@app.get("/api/v1/sort-id")
+@app.get("/api/v1/last-reading")
 def get_id_in_order(db: Session = Depends(get_db)):
-    return crud.read_reading_Ids(db)
+    return crud.get_last_reading(db)
 
 
 @app.get("/api/v1/temperature/{id}", response_model=schemas.Temperature)
 def get_both_temperatures_by_id(id: int, db: Session = Depends(get_db)):
-    return crud.read_reading_by_Id(db, id)
+    return crud.read_by_id(db, id)
 
 
 @app.get("/api/v1/temerature/{id}")
@@ -126,5 +121,4 @@ def launch_index():
         render = html.read()
 
     return render
-
 
