@@ -41,8 +41,7 @@ def create_reading(
             temp_c = (temp - 32) * 5/9
     create_reading(db, id, temp_c, temp_f, client)
 
-def read_all(db: Session, skip: int = 0, limit: int = 100) -> list:
-    return db.query(models.Readings).all()
+#----------------------
 
 def filter_reading(
         db: Session,
@@ -71,6 +70,9 @@ def filter_reading(
         query = query.filter(models.Readings.time <= bis)
     return query.offset(skip).limit(limit).all()
 
+def read_all(db: Session, skip: int = 0, limit: int = 100) -> list[models.Readings]:
+    return db.query(models.Readings).offset(skip).limit(limit).all()
+
 def read_by_Id(db: Session, id: int, skip: int = 0, limit: int = 100) -> list:
     return filter_reading(db, id=id, skip=skip, limit=limit)
 
@@ -92,9 +94,10 @@ def read_by_Time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -
 def read_by_Timeframe(db: Session, von: datetime, bis: datetime, skip: int = 0, limit: int = 100) -> list:
     return filter_reading(db, von=von, bis=bis, skip=skip, limit=limit)
 
-def read_by_Client_and_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> models.Readings:
+def read_by_Client_and_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> list:
     return filter_reading(db, client=client, time=time, skip=skip, limit=limit)
 
+#----------------------
 
 def update_reading(
         db: Session,
@@ -126,11 +129,25 @@ def update_Time(db: Session, id: int, skip: int = 0, limit: int = 100) -> None:
     time_input = input("Bitte gebe eine neue Zeit ein: ")
     update_reading(db=db, id=id, time=time_input)
 
-def delete_by_Id(db: Session, id: int):
-    read_by_Id.\
-        delete(synchronize_session=False)
+#----------------------
+
+def delete_all(db: Session) -> None:
+    db.query(models.Readings).delete()
     db.commit()
+
+def delete_by_Id(db: Session, id: int):
+    entries = read_by_Id(db, id=id)
+    if entries:
+        for entry in entries:
+            db.delete(entry)
+        db.commit()
     return {"msg": f"Temperature with ID:{id} deleted"}
+
+def delete_by_Client(db: Session, cliemt: str, skip: int = 0, limit: int = 100) -> None:
+    entries_to_delete = read_by_Client(db=db, client=cliemt, skip=skip, int=int, limit=limit)
+    
+    for entry in entries_to_delete:
+        delete_by_Id(db, entry.id)
 
 def delete_by_Time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -> None:
     entries_to_delete = read_by_Time(db=db, time=time, skip=skip, int=int, limit=limit)
