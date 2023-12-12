@@ -1,9 +1,9 @@
 # CRUD Anweisungen für unsere Datenbankabfragen
 
-from sqlalchemy.orm import Session, Query, update
+from sqlalchemy.orm import Session, update
 from datetime import datetime
 from typing import Optional
-from . import models, schemas
+from . import models
 
 
 def create_reading(
