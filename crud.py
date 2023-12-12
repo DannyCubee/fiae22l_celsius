@@ -92,7 +92,7 @@ def read_by_Time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -
 def read_by_Timeframe(db: Session, von: datetime, bis: datetime, skip: int = 0, limit: int = 100) -> list:
     return filter_reading(db, von=von, bis=bis, skip=skip, limit=limit)
 
-def read_by_Client_and_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> list:
+def read_by_Client_and_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> models.Readings:
     return filter_reading(db, client=client, time=time, skip=skip, limit=limit)
 
 
@@ -122,16 +122,28 @@ def update_reading(
     )
     db.commit()
 
-def update_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> list:
+def update_Time(db: Session, id: int, skip: int = 0, limit: int = 100) -> None:
     time_input = input("Bitte gebe eine neue Zeit ein: ")
-    return filter_reading(db, client=client, time=time_input, skip=skip, limit=limit)
+    update_reading(db=db, id=id, time=time_input)
 
-
-def delete_reading(db: Session, id: int) -> None:
-    db.query(models.Readings).filter(models.Readings.id == id).\
+def delete_by_Id(db: Session, id: int):
+    read_by_Id.\
         delete(synchronize_session=False)
     db.commit()
     return {"msg": f"Temperature with ID:{id} deleted"}
 
-def delete_Time(db:Session, client: str, id: int, time: datetime, skip: int = 0, limit: int = 100) -> list:
-    return filter_reading(db, client=client, time=None, skip=skip, limit=limit)
+def delete_by_Time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -> None:
+    entries_to_delete = read_by_Time(db=db, time=time, skip=skip, int=int, limit=limit)
+    
+    for entry in entries_to_delete:
+        delete_by_Id(db, entry.id)
+
+def delete_by_Timeframe(db: Session, client: str, von: datetime, bis: datetime, skip: int = 0, limit: int = 100) -> None:
+    entries_to_delete = read_by_Timeframe(db, client=client, von=von, bis=bis, skip=skip, limit=limit)
+    for entry in entries_to_delete:
+        delete_by_Id(db, entry.id)
+
+def delete_by_Client_and_Time(db: Session, client: str, time: datetime, skip: int = 0, limit: int = 100) -> None:
+    entries_to_delete = read_by_Client_and_Time(db, client=client, time=time, skip=skip, limit=limit)
+    for entry in entries_to_delete:
+        delete_by_Id(db, entry.id)
