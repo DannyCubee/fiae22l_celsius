@@ -1,4 +1,9 @@
 # Erstellen der API-Routen, sowie der Logik, welche für jeden API-Call ausgeführt wird
+
+from fastapi import FastAPI
+
+import models
+from database import SessionLocal, engine
 from datetime import datetime
 
 
@@ -16,6 +21,7 @@ from app import schemas
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
@@ -31,6 +37,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -41,6 +48,11 @@ def get_db():
 
 @app.get("/hello")
 def say_hello():
+    return {"Nachricht1": "Hallo",
+            "Nachricht2": "Das ist ein API-Call"}
+
+@app.post("/post")
+def create_value():
     return {"Nachricht1": "Hallo!",
             "Nachricht2": "Das ist ein API-Call",
             "Nachricht3": "Wie geht es dir?"}
@@ -114,4 +126,5 @@ def launch_index():
         render = html.read()
 
     return render
+
 

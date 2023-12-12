@@ -3,7 +3,9 @@
 
 from sqlalchemy import Column, Integer, Float, String, DateTime
 
+
 from app.database import Base
+
 
 
 class Readings(Base):
@@ -13,4 +15,5 @@ class Readings(Base):
     temp_c = Column(Float)
     temp_f = Column(Float)
     client = Column(String)
-    time = Column(DateTime)
+    time   = Column(DateTime)
+

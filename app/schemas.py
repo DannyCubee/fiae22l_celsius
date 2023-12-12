@@ -24,3 +24,4 @@ class TemperatureFahrenheit(BaseModel):
 
 
 
+
