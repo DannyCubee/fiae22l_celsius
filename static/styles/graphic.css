@@ -2,20 +2,22 @@
         #chart {
             width: 590px;
             height: 400px;
-            border: 3px solid #8d8d8d;
+            border-bottom: 3px solid #8d8d8d;
+            border-left: 3px solid #8d8d8d;
             position: relative;
-            padding: 40px;
+            left: 20px;
             box-sizing: border-box;
         }
-        /* style for axes */
-        .axis {
+        .axis-label {
             position: absolute;
-
-            border-left: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
+            font-size: 16px;
+            color: #000000;
+            font-weight: bold;
+        }
+        .line {
+            position: absolute;
+            border-bottom: 2px solid #acb0e0;
+            z-index: 0;
         }
         /* style for points on axes */
         .point {
@@ -23,13 +25,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #002aff;
-        }
-        .axis-label {
-            position: absolute;
-            font-size: 14px;
-            color: #000000;
-            /*font-weight: bold;*/
+            background-color: #4b6dff;
         }
         #toggleButton {
             position: absolute;
@@ -71,6 +67,6 @@
         }
         h1 {
             margin-left: 150px;
-            font-size: 12px;
+            font-size: 36px;
             color: #666;
         }

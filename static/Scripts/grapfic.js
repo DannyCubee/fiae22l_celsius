@@ -32,31 +32,67 @@
             const valueRange = maxValue - minValue;
             const timeInterval = 100 / (data.length - 1);
 
-            data.forEach((temperature, index) => {
-                const x = index * timeInterval * 5; // Change the distance on the axe X
-                const y = 320 - ((temperature - minValue) / valueRange) * 300 + 20; // Change the size on the axe X
+            const yAxisMinLabel = document.createElement('div');
+            yAxisMinLabel.className = 'axis-label';
+            yAxisMinLabel.style.left = '3px';
+            yAxisMinLabel.style.bottom = '20px';
+            yAxisMinLabel.textContent = `${minValue}${isCelsius ? '°C' : '°F'}`;
+            chart.appendChild(yAxisMinLabel);
 
+            const yAxisMaxLabel = document.createElement('div');
+            yAxisMaxLabel.className = 'axis-label';
+            yAxisMaxLabel.style.left = '3px';
+            yAxisMaxLabel.style.top = '20px';
+            yAxisMaxLabel.textContent = `${maxValue}${isCelsius ? '°C' : '°F'}`;
+            chart.appendChild(yAxisMaxLabel);
+
+            let i = 0;
+            data.forEach((temperature, index) => {
+
+                const x = index * timeInterval * 5; // Change the distance on the axe X
+                const y = 335 - ((temperature - minValue) / valueRange) * 335 ; // Change the size on the axe X
+
+                if (index === 0 || index === data.length - 1) {
+                    const timeLabel = document.createElement('div');
+                    timeLabel.className = 'axis-label';
+                    timeLabel.style.left = x + 40 + 'px';
+                    timeLabel.style.bottom = '0';
+                    timeLabel.textContent = temperatureData[index].time;
+                    chart.appendChild(timeLabel);
+                }
+
+                if(i < data.length - 1) {
+                    const x2 = (i + 1) * timeInterval * 5;
+                    const y2 = 335 - ((data[i + 1] - minValue) / valueRange) * 335;
+                    const distance = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+
+                    const line = document.createElement('div');
+                    line.className = 'line';
+                    line.style.left = x + 54 + 'px';
+                    line.style.top = y + 27 + 'px';
+                    line.style.width = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2)) + 'px';
+                    line.style.transformOrigin = '0% 0%';
+                    line.style.transform = `rotate(${Math.atan2(y2 - y, x2 - x)}rad)`;
+                    chart.appendChild(line);
+                    i++;
+                }
                 const newPoint = document.createElement('div');
                 newPoint.className = 'point';
-                newPoint.style.left = x + 35 + 'px';
+                newPoint.style.left = x + 50 + 'px';
                 newPoint.style.top = y + 25 + 'px';
 
                 chart.appendChild(newPoint);
 
-                const timeLabel = document.createElement('div');
-                timeLabel.className = 'axis-label';
-                timeLabel.style.left = x + 30 + 'px';
-                timeLabel.style.bottom = '0';
-                timeLabel.textContent = temperatureData[index].time;
-                chart.appendChild(timeLabel);
-
                 const tempLabel = document.createElement('div');
                 tempLabel.className = 'axis-label';
-                tempLabel.style.left = x + 25 + 'px';
+                tempLabel.style.left = x + 40 + 'px';
                 tempLabel.style.top = y + 10 + 'px';
                 tempLabel.textContent = isCelsius ? temperature + '°C' : temperature + '°F';
                 chart.appendChild(tempLabel);
+
+
             });
+
         }
 
         createPoints();
