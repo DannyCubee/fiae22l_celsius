@@ -1,5 +1,6 @@
 # CRUD Anweisungen für unsere Datenbankabfragen
 from sqlalchemy.orm import Session
+from sqlalchemy import update
 from typing import Optional
 from datetime import datetime
 from sqlalchemy import desc
@@ -156,7 +157,7 @@ def delete_by_client_and_time(db: Session, client: str, time: datetime, skip: in
     return new_data
 
 
-def read_reading(db: Session) -> list:
+def get_all_readings(db: Session) -> list:
     return db.query(models.Readings).all()
 
 
@@ -188,7 +189,7 @@ def read_reading_by_client(db: Session, client: str) -> list:
 
 
 def read_reading_by_Client_and_Time(db: Session, client: str, time: datetime) -> list:
-    return db.query(models.Readings).filter_by(person=client).filter(models.Readings.timestamp <= time).all()
+    return db.query(models.Readings).filter(models.Readings.time <= time, models.Readings.client == client).all()
 
 
 def delete_reading(db: Session, id: int):

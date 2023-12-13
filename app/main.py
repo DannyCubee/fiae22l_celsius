@@ -1,11 +1,5 @@
 # Erstellen der API-Routen, sowie der Logik, welche für jeden API-Call ausgeführt wird
-
-from fastapi import FastAPI
-
-from app import models
-from app.database import SessionLocal, engine
 from datetime import datetime
-
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
@@ -14,7 +8,6 @@ from fastapi.responses import HTMLResponse
 from fastapi .middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app import models
 from app.models import Base
 from app import crud
 from app import schemas
@@ -67,7 +60,7 @@ def create_new_temperatures(temp_c: float, temp_f: float, client: str, db: Sessi
 
 @app.get("/api/v1/all-temperatures")
 def get_all_temperatures(db: Session = Depends(get_db)):
-    return crud.read_reading(db)
+    return crud.get_all_readings(db)
 
 
 @app.get("/api/v1/last-reading")
@@ -85,19 +78,9 @@ def get_temperature_by_id(id: int, is_celsius: bool, db: Session = Depends(get_d
     return crud.read_reading_Temperature(db, id, is_celsius)
 
 
-@app.get("/api/v1/get-celsius-temps")
-def get_all_celsius_temperatures(db: Session = Depends(get_db)):
-    return crud.read_reading_Celsius(db)
-
-
-@app.get("/api/v1/get-fahrenheit-temps")
-def get_all_fahrenheit_temperatures(db: Session = Depends(get_db)):
-    return crud.read_reading_Fahrenheit(db)
-
-
 @app.get("/api/v1/get-temps-from-client")
 def get_all_temperatures_from_client(client: str, db: Session = Depends(get_db)):
-    return crud.read_reading_by_Client(db, client)
+    return crud.read_reading_by_client(db, client)
 
 
 @app.get("/api/v1/get-temps-from-client-and-time")
@@ -105,15 +88,15 @@ def get_temperature_by_client_and_time(time: datetime, client: str, db: Session 
     return crud.read_reading_by_Client_and_Time(db, client, time)
 
 
-@app.put("api/v1/update_temperature_of_id")
+@app.put("/api/v1/update_temperature_of_id")
 def update_temperature_of_id(temp_c: float, temp_f: float, id: int, db: Session = Depends(get_db)):
     return crud.update_reading(db, id, temp_c, temp_f)
-
 
 
 @app.delete("/api/v1/delete-temperature")
 def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
     return crud.delete_reading(db, id)
+
 
 @app.get("/index", response_class=HTMLResponse)
 def launch_index():
