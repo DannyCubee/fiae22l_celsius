@@ -41,4 +41,15 @@ body {
 }
 
 
+#clientrefresh {
+    background-color: #4b6dff;
+    padding: 0.5rem;
+    border-radius: 0.6rem;
+}
+
+#clientrefresh:hover {
+    background-color: #15235d;
+    color: white;
+}
+
 

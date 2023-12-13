@@ -1,4 +1,6 @@
 # Erstellen der API-Routen, sowie der Logik, welche für jeden API-Call ausgeführt wird
+import subprocess
+
 from datetime import datetime
 
 from fastapi import FastAPI, Depends
@@ -100,8 +102,30 @@ def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
 
 @app.get("/index", response_class=HTMLResponse)
 def launch_index():
+    rpi_1 = subprocess.Popen(["ping", "-c", "1", "192.168.2.99"], stdout=subprocess.PIPE)
+    rpi_1_out = rpi_1.communicate()[0].decode("utf-8")
+    print(rpi_1_out)
     with open("static/index.html", "r") as html:
         render = html.read()
 
     return render
 
+
+@app.get("/get-uptime")
+def get_uptime():
+    rpi_1 = subprocess.Popen(["ping", "-c", "1", "192.168.2.56"], stdout=subprocess.PIPE)
+    rpi_1_out = rpi_1.communicate()[0].decode("utf-8")
+    if "1 received" in rpi_1_out:
+        rpi1_up = True
+    else:
+        rpi1_up = False
+
+    return rpi1_up
+
+
+@app.get("/graph-view", response_class=HTMLResponse)
+def graph_view():
+    with open("static/diagramm.html", "r") as html:
+        render = html.read()
+
+    return render
