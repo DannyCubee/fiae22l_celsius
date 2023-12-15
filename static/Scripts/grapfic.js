@@ -18,6 +18,7 @@
 
     function toggleTemperature() {
         const chart = document.getElementById('chart');
+        const chartWidth = chart.clientWidth;
 
         //To clear graphic before usage
         chart.innerHTML = '';
@@ -94,8 +95,9 @@
             });
 
         }
-
-        createPoints();
+        if (chartWidth !== 0) {
+            createPoints();
+        }
 
         const dataTableBody = document.querySelector('#dataTable tbody');
         dataTableBody.innerHTML = '';
