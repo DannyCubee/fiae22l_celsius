@@ -1,4 +1,5 @@
 # Erstellen der API-Routen, sowie der Logik, welche für jeden API-Call ausgeführt wird
+import os
 import subprocess
 
 from datetime import datetime
@@ -32,6 +33,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+test_host = "localhost"
+live_host = "172.20.174.121"
+client1_address = "127.0.0.1"
+client2_address = ""
 
 
 def get_db():
@@ -102,8 +108,8 @@ def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
 
 @app.get("/index", response_class=HTMLResponse)
 def launch_index():
-    rpi_1 = subprocess.Popen(["ping", "-c", "1", "192.168.2.99"], stdout=subprocess.PIPE)
-    rpi_1_out = rpi_1.communicate()[0].decode("utf-8")
+    rpi_1 = subprocess.run(["ping", "-n", "1", "172.20.105.186"], capture_output=True)
+    rpi_1_out = rpi_1.stdout
     print(rpi_1_out)
     with open("static/index.html", "r") as html:
         render = html.read()
@@ -111,11 +117,20 @@ def launch_index():
     return render
 
 
+@app.get("/get-temps-in-timeframe")
+def get_temps_in_timeframe(start: datetime = datetime.now(), end: datetime = datetime.now(), db: Session = Depends(get_db)):
+    data = crud.get_reading_by_timeframe(db, start, end)
+    return data
+
+
 @app.get("/get-uptime")
 def get_uptime():
-    rpi_1 = subprocess.Popen(["ping", "-c", "1", "192.168.2.56"], stdout=subprocess.PIPE)
-    rpi_1_out = rpi_1.communicate()[0].decode("utf-8")
-    if "1 received" in rpi_1_out:
+    host_os = os.name
+    print(host_os)
+    rpi_1 = subprocess.run(["ping", "-n", "1", "172.20.191.79"], capture_output=True)
+    rpi_1_out = rpi_1.stdout
+    print(rpi_1_out)
+    if "Empfangen = 1" in str(rpi_1_out):
         rpi1_up = True
     else:
         rpi1_up = False

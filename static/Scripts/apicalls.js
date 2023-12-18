@@ -1,5 +1,9 @@
+const test_host = "0.0.0.0:8000"
+const live_host = "172.20.174.121:8000"
+
 async function callapi() {
-    const response = await fetch("http://0.0.0.0:8000/hello");
+    const response = await fetch(`/hello`);
+    console.log(live_host);
     const values = await response.json();
     let changeme =  document.getElementById("testing")
 
@@ -8,7 +12,7 @@ async function callapi() {
 }
 
 async function getlastread(){
-    const response = await fetch("http://localhost:8000/api/v1/last-reading");
+    const response = await fetch("/api/v1/last-reading");
     const value = await response.json();
     let changeme = document.getElementById("livetemp")
     let marqueetext = `Last reading from ${value["client"]}, ${value["temp_c"]}°C/${value["temp_f"]}°F`
@@ -17,15 +21,13 @@ async function getlastread(){
 
 
 async function getClientStatus(){
-
-
     const rpi1_statustext = document.getElementById("client1_status")
 
     rpi1_statustext.style.color = "gray"
     rpi1_statustext.textContent = "loading..."
 
 
-    const response = await fetch("http://0.0.0.0:8000/get-uptime")
+    const response = await fetch("/get-uptime")
     const value = await response.json()
 
     console.log(value)

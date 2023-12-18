@@ -197,3 +197,9 @@ def delete_reading(db: Session, id: int):
         delete(synchronize_session=False)
     db.commit()
     return {"msg": f"Temperature with ID:{id} deleted"}
+
+
+def get_reading_by_timeframe(db: Session, start: datetime, end: datetime):
+    data = db.query(models.Readings).filter(models.Readings.time >= start, models.Readings.time <= end).all()
+    return data
+
