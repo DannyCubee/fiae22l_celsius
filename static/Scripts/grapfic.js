@@ -1,4 +1,4 @@
-    let isCelsius = true;
+let isCelsius = true;
     let temperatureData = [];
 
     async function callData(data) {
