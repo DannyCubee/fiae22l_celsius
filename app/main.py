@@ -158,3 +158,7 @@ def graph_view():
         render = html.read()
 
     return render
+
+@app.get("/recent-readings")
+def recent_readings(db: Session = Depends(get_db)):
+    return crud.get_recent_readings(db)

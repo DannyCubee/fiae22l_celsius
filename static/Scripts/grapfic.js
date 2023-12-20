@@ -2,15 +2,21 @@
     let temperatureData = [];
 
     async function generateRandomTemperature() {
-
-        const response = await fetch("/api/v1/all-temperatures");
+        const response = await fetch("/recent-readings");
         const value = await response.json();
 
+
         value.forEach(obj => {console.log(obj["temp_c"])
-        temperatureData.push({time: obj["time"], celsius: obj["temp_c"], fahrenheit: obj["temp_f"]})})
+            let date = new Date(obj["time"]);
+            let hours = date.getHours().toString().padStart(2, "0")
+            let minutes = date.getMinutes().toString().padStart(2, "0")
+            let seconds = date.getSeconds().toString().padStart(2, "0")
+            let formatttedTime = `${hours}:${minutes}:${seconds}`
+            console.log(formatttedTime)
+            temperatureData.push({time: formatttedTime, celsius: obj["temp_c"], fahrenheit: obj["temp_f"]})})
 
         temperatureData.forEach((item, index) => {
-            item.celsius = Math.floor(Math.random() * 51) - 10;
+
             item.fahrenheit = (item.celsius * 9 / 5) + 32;
         });
     }
@@ -87,7 +93,7 @@
                 tempLabel.style.left = x + 40 + 'px';
                 tempLabel.style.top = y + 10 + 'px';
                 tempLabel.textContent = isCelsius ? temperature + '°C' : temperature + '°F';
-                chart.appendChild(tempLabel);
+                //chart.appendChild(tempLabel);
 
 
             });
@@ -120,6 +126,8 @@
     document.getElementById('refreshButton').addEventListener('click', function() {
             generateRandomTemperature();
             toggleTemperature();
+            temperatureData = [];
+
     });
 
     // Create the graphic by page opening

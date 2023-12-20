@@ -1,4 +1,6 @@
 # CRUD Anweisungen für unsere Datenbankabfragen
+import operator
+
 from sqlalchemy.orm import Session
 from sqlalchemy import update
 from typing import Optional
@@ -201,4 +203,9 @@ def delete_reading(db: Session, id: int):
 
 def get_reading_by_timeframe(db: Session, start: datetime, end: datetime):
     data = db.query(models.Readings).filter(models.Readings.time >= start, models.Readings.time <= end).all()
+    return data
+
+def get_recent_readings(db: Session):
+    data = db.query(models.Readings).order_by(desc(models.Readings.id)).limit(30).all()
+    data.reverse()
     return data
