@@ -153,14 +153,14 @@ def delete_by_client(db: Session, cliemt: str, skip: int = 0, limit: int = 100) 
         delete_reading(db, entry.id)
 
 #Löscht Datensätze eines Client
-def delete_by_Time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -> None:
+def delete_by_time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -> None:
     entries_to_delete = read_reading_by_time(db=db, time=time, skip=skip, int=int, limit=limit)
     for entry in entries_to_delete:
         delete_reading(db, entry.id)
 
 #Löscht Datensätze zu einem übergebene Zeitpunkt
-def delete_by_timeframe(db: Session, client: str, von: datetime, bis: datetime, skip: int = 0, limit: int = 100) -> None:
-    entries_to_delete = get_reading_by_timeframe(db, client=client, von=von, bis=bis, skip=skip, limit=limit)
+def delete_by_timeframe(db: Session, von: datetime, bis: datetime, skip: int = 0, limit: int = 100) -> None:
+    entries_to_delete = get_reading_by_timeframe(db, von=von, bis=bis, skip=skip, limit=limit)
     for entry in entries_to_delete:
         delete_reading(db, entry.id)
 
