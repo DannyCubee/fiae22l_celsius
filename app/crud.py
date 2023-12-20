@@ -20,23 +20,6 @@ def create_reading(db: Session, id: int, temp_c: float, temp_f: float, client: s
     db.commit()
     db.refresh(new_data)
 
-#Anlegen eines neuen Datensatz mit nur einem Temperaturwert
-def create_reading(
-        db: Session,
-        temp: float,
-        einheit: str,
-        client: str
-        ) -> None:
-    
-    if einheit is not None:
-        if einheit.equals("celsius"):
-            temp_c = temp
-            temp_f = (temp * 9/5) + 32
-        elif einheit.equals("fahrenheit"):
-            temp_f = temp
-            temp_c = (temp - 32) * 5/9
-    create_reading(db, id, temp_c, temp_f, client)
-
 #Funktion zum Filtern zurückgegebener Datenbankeinträge
 def filter_reading(
         db: Session,

@@ -71,12 +71,10 @@ def create_new_temperatures(id: int, temp_c: float, temp_f: float, client: str, 
 @app.get("/api/v1/all-temperatures")
 def get_all_temperatures(db: Session = Depends(get_db)):
     return crud.read_all(db)
-    return crud.get_all_readings(db)
 
 
 @app.get("/api/v1/last-reading")
 def get_id_in_order(db: Session = Depends(get_db)):
-    return crud.get_last_reading(db)
     return crud.read_Ids(db)
 
 @app.get("/api/v1/last-reading")
@@ -85,7 +83,6 @@ def get_last_id(db: Session = Depends(get_db)):
 
 @app.get("/api/v1/temperature/{id}", response_model=schemas.Temperature)
 def get_both_temperatures_by_id(id: int, db: Session = Depends(get_db)):
-    return crud.read_by_id(db, id)
     return crud.read_by_Id(db, id)
 
 
@@ -109,13 +106,12 @@ def get_all_fahrenheit_temperatures(db: Session = Depends(get_db)):
 
 @app.get("/api/v1/get-temps-from-client")
 def get_all_temperatures_from_client(client: str, db: Session = Depends(get_db)):
-    return crud.read_reading_by_client(db, client)
     return crud.read_by_Client(db, client)
 
 
 @app.get("/api/v1/get-temps-from-client-and-time")
 def get_temperature_by_client_and_time(time: datetime, client: str, db: Session = Depends(get_db)):
-    return crud.read_reading_by_Client_and_Time(db, client, time)
+    return crud.read_by_Client_and_Time(db, client, time)
 
 
 @app.put("/api/v1/update_temperature_of_id")
@@ -125,7 +121,7 @@ def update_temperature_of_id(temp_c: float, temp_f: float, id: int, db: Session 
 
 @app.delete("/api/v1/delete-temperature")
 def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
-    return crud.delete_reading(db, id)
+    return crud.delete_all(db, id)
 
 
 @app.get("/index", response_class=HTMLResponse)
@@ -141,7 +137,7 @@ def launch_index():
 
 @app.get("/get-temps-in-timeframe")
 def get_temps_in_timeframe(start: datetime = datetime.now(), end: datetime = datetime.now(), db: Session = Depends(get_db)):
-    data = crud.get_reading_by_timeframe(db, start, end)
+    data = crud.read_by_Timeframe(db, start, end)
     return data
 
 
