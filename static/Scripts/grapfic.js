@@ -1,34 +1,23 @@
-let isCelsius = true;
+    let isCelsius = true;
     let temperatureData = [];
 
-    async function callData(data) {
-    try {
-        const response = await fetch("172.20.174.121:8000/api/v1/all-temperatures");
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const values = await response.json();
+    async function generateRandomTemperature() {
 
-        values.forEach((value) => {
-            console.log(value["temp_c"]);
-            console.log("test");
-            const newItem = {
-                time: value.time,
-                celsius: value.celsius,
-                fahrenheit: value.fahrenheit
-            };
-            data.push(newItem);
+        const response = await fetch("/api/v1/all-temperatures");
+        const value = await response.json();
+
+        value.forEach(obj => {console.log(obj["temp_c"])
+        temperatureData.push({time: obj["time"], celsius: obj["temp_c"], fahrenheit: obj["temp_f"]})})
+
+        temperatureData.forEach((item, index) => {
+            item.celsius = Math.floor(Math.random() * 51) - 10;
+            item.fahrenheit = (item.celsius * 9 / 5) + 32;
         });
-
-        return data;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        return [];
     }
-}
 
     function toggleTemperature() {
         const chart = document.getElementById('chart');
+
         //To clear graphic before usage
         chart.innerHTML = '';
 
@@ -129,12 +118,12 @@ let isCelsius = true;
     });
 
     document.getElementById('refreshButton').addEventListener('click', function() {
-            temperatureData = callData(temperatureData);
+            generateRandomTemperature();
             toggleTemperature();
     });
 
     // Create the graphic by page opening
     window.onload = function() {
-            temperatureData = callData(temperatureData);
+            generateRandomTemperature();
             toggleTemperature();
         };
