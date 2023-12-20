@@ -1,11 +1,8 @@
 # Erstellen der API-Routen, sowie der Logik, welche für jeden API-Call ausgeführt wird
+import os
+import subprocess
 
-from fastapi import FastAPI
-
-import models
-from database import SessionLocal, engine
 from datetime import datetime
-
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
@@ -14,11 +11,11 @@ from fastapi.responses import HTMLResponse
 from fastapi .middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app import models
+from app.models import Base
 from app import crud
 from app import schemas
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -36,6 +33,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+test_host = "localhost"
+live_host = "172.20.174.121"
+client1_address = "127.0.0.1"
+client2_address = ""
 
 
 def get_db():
@@ -60,23 +62,21 @@ def create_value():
 
 # noinspection PyTypeChecker
 @app.post("/api/v1/new-temperatures")
+def create_new_temperatures(temp_c: float, temp_f: float, client: str, db: Session = Depends(get_db)):
+    return crud.create_reading(db, temp_c, temp_f, client)
 def create_new_temperatures(id: int, temp_c: float, temp_f: float, client: str, db: Session = Depends(get_db)):
     return crud.create_reading(db, id, temp_c, temp_f, client)
 
 
-# noinspection PyTypeChecker
-@app.post("/api/v1/new-temperature")
-def create_new_temperature(id: int, temp: float, is_celsius: bool, client: str, db: Session = Depends(get_db)):
-    return crud.create_reading(db, id, temp, client, is_celsius)
-
-
-@app.get("/api/v1/all-temperatures", response_model=schemas.Temperature)
+@app.get("/api/v1/all-temperatures")
 def get_all_temperatures(db: Session = Depends(get_db)):
     return crud.read_all(db)
+    return crud.get_all_readings(db)
 
 
-@app.get("/api/v1/sort-id")
+@app.get("/api/v1/last-reading")
 def get_id_in_order(db: Session = Depends(get_db)):
+    return crud.get_last_reading(db)
     return crud.read_Ids(db)
 
 @app.get("/api/v1/last-reading")
@@ -85,6 +85,7 @@ def get_last_id(db: Session = Depends(get_db)):
 
 @app.get("/api/v1/temperature/{id}", response_model=schemas.Temperature)
 def get_both_temperatures_by_id(id: int, db: Session = Depends(get_db)):
+    return crud.read_by_id(db, id)
     return crud.read_by_Id(db, id)
 
 
@@ -108,29 +109,74 @@ def get_all_fahrenheit_temperatures(db: Session = Depends(get_db)):
 
 @app.get("/api/v1/get-temps-from-client")
 def get_all_temperatures_from_client(client: str, db: Session = Depends(get_db)):
+    return crud.read_reading_by_client(db, client)
     return crud.read_by_Client(db, client)
 
 
 @app.get("/api/v1/get-temps-from-client-and-time")
 def get_temperature_by_client_and_time(time: datetime, client: str, db: Session = Depends(get_db)):
-    return crud.read_by_Client_and_Time(db, client, time)
+    return crud.read_reading_by_Client_and_Time(db, client, time)
 
 
-@app.put("api/v1/update_temperature_of_id")
+@app.put("/api/v1/update_temperature_of_id")
 def update_temperature_of_id(temp_c: float, temp_f: float, id: int, db: Session = Depends(get_db)):
     return crud.update_reading(db, id, temp_c, temp_f)
 
 
-
 @app.delete("/api/v1/delete-temperature")
 def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
-    return crud.delete_by_Id(db, id)
+    return crud.delete_reading(db, id)
+
 
 @app.get("/index", response_class=HTMLResponse)
 def launch_index():
+    rpi_1 = subprocess.run(["ping", "-n", "1", " 172.20.172.169"], capture_output=True)
+    rpi_1_out = rpi_1.stdout
+    print(rpi_1_out)
     with open("static/index.html", "r") as html:
         render = html.read()
 
     return render
 
 
+@app.get("/get-temps-in-timeframe")
+def get_temps_in_timeframe(start: datetime = datetime.now(), end: datetime = datetime.now(), db: Session = Depends(get_db)):
+    data = crud.get_reading_by_timeframe(db, start, end)
+    return data
+
+
+@app.get("/get-uptime-rp1")
+def get_uptime():
+    host_os = os.name
+    print(host_os)
+    rpi_1 = subprocess.run(["ping", "-n", "1", "172.20.191.79"], capture_output=True)
+    rpi_1_out = rpi_1.stdout
+    print(rpi_1_out)
+    if "Empfangen = 1" in str(rpi_1_out):
+        rpi1_up = True
+    else:
+        rpi1_up = False
+
+    return rpi1_up
+
+@app.get("/get-uptime-rp2")
+def get_uptime():
+    host_os = os.name
+    print(host_os)
+    rpi_1 = subprocess.run(["ping", "-n", "1", "172.20.191.79"], capture_output=True)
+    rpi_1_out = rpi_1.stdout
+    print(rpi_1_out)
+    if "Empfangen = 1" in str(rpi_1_out):
+        rpi1_up = True
+    else:
+        rpi1_up = False
+
+    return rpi1_up
+
+
+@app.get("/graph-view", response_class=HTMLResponse)
+def graph_view():
+    with open("static/diagramm.html", "r") as html:
+        render = html.read()
+
+    return render

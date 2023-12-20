@@ -10,7 +10,6 @@ from . import models
 #Anlegen eines Neuen Datensatz mit allen gegebenen Daten der in die Datenbank eingefügt wird
 def create_reading(db: Session, id: int, temp_c: float, temp_f: float, client: str):
     new_data = models.Readings(
-        id=id,
         temp_c=temp_c,
         temp_f=temp_f,
         client=client,
@@ -161,14 +160,12 @@ def delete_by_Id(db: Session, id: int):
 #Löscht Datensätze eines Client
 def delete_by_Client(db: Session, cliemt: str, skip: int = 0, limit: int = 100) -> None:
     entries_to_delete = read_by_Client(db=db, client=cliemt, skip=skip, int=int, limit=limit)
-    
     for entry in entries_to_delete:
         delete_by_Id(db, entry.id)
 
 #Löscht Datensätze zu einem übergebene Zeitpunkt
 def delete_by_Time(db: Session, time: datetime, skip: int = 0, limit: int = 100) -> None:
     entries_to_delete = read_by_Time(db=db, time=time, skip=skip, int=int, limit=limit)
-    
     for entry in entries_to_delete:
         delete_by_Id(db, entry.id)
 

@@ -5,23 +5,34 @@
     <title>Title</title>
     <link rel="stylesheet" href="/static/styles/base.css">
 </head>
-<body>
+<body onload="getlastread()">
+<script src="/static/Scripts/apicalls.js"></script>
 <div id="navbar">
     <div id="navbarcontent">
-        <div id="lefttest">Hello</div>
+        <div id="clients">
+            <span id="client1_name">RPI-1: </span><span id="client1_status">-UNKNOWN-</span>
+            <span id="client2_name">RPI-2: </span><span id="client2_status">-UNKNOWN-</span>
+            <a id="clientrefresh" onclick="getClientStatus()">Refresh Status</a>
+        </div>
         <div id="logo">FIAE22L Celsius</div>
         <div id="righttest">
-            <a href="/static/diagramm.html">Graph View</a>
-            <a href="/static/diagramm.html">Table View</a>
+            <a href="/graph-view">Graph View</a>
+            <a href="/docs">API-Overview</a>
         </div>
 
     </div>
 </div>
+<div onload="getlastread()">
+    <marquee id="livetemp" >test</marquee>
+</div>
 
 <div id="contentbox">
-    <script src="/static/Scripts/apicalls.js"></script>
+
         <a onclick="callapi()">Click me</a>
-        <p id="testing">Ambatuchange</p>
+        <p id="testing">Call /hello API-Route</p>
+    <br>
+
+    <img src="/static/topology.svg" width="80%" height="80%">
 </div>
 </body>
 </html>
