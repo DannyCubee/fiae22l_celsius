@@ -22,13 +22,16 @@ async function getlastread(){
 
 async function getClientStatus(){
     const rpi1_statustext = document.getElementById("client1_status")
+    const rpi2_statustext = document.getElementById("client2_status")
 
     rpi1_statustext.style.color = "gray"
     rpi1_statustext.textContent = "loading..."
+    rpi2_statustext.style.color = "gray"
+    rpi2_statustext.textContent = "loading..."
 
 
-    const response = await fetch("/get-uptime")
-    const value = await response.json()
+    const response1 = await fetch("/get-uptime-rp1")
+    const value = await response1.json()
 
     console.log(value)
 
@@ -40,5 +43,26 @@ async function getClientStatus(){
         rpi1_statustext.style.color = "red";
     }
 
+
+    const response2 = await fetch("/get-uptime-rp2")
+    const value2 = await response2.json()
+
+    console.log(value2)
+
+
+    if (value2 === true){
+        rpi2_statustext.textContent = "ONLINE";
+        rpi2_statustext.style.color = "green";
+    } else {
+        rpi2_statustext.textContent = "OFFLINE";
+        rpi2_statustext.style.color = "red";
+    }
+
 }
 
+async function getValues(){
+    const response = await fetch("/api/v1/all-temperatures");
+    const value = await response.json();
+
+    value.forEach(obj => {console.log(obj["temp_c"])})
+}

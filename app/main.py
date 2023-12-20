@@ -108,7 +108,7 @@ def delete_temperature_of_id(id: int, db: Session = Depends(get_db)):
 
 @app.get("/index", response_class=HTMLResponse)
 def launch_index():
-    rpi_1 = subprocess.run(["ping", "-n", "1", "172.20.105.186"], capture_output=True)
+    rpi_1 = subprocess.run(["ping", "-n", "1", " 172.20.172.169"], capture_output=True)
     rpi_1_out = rpi_1.stdout
     print(rpi_1_out)
     with open("static/index.html", "r") as html:
@@ -123,7 +123,21 @@ def get_temps_in_timeframe(start: datetime = datetime.now(), end: datetime = dat
     return data
 
 
-@app.get("/get-uptime")
+@app.get("/get-uptime-rp1")
+def get_uptime():
+    host_os = os.name
+    print(host_os)
+    rpi_1 = subprocess.run(["ping", "-n", "1", "172.20.191.79"], capture_output=True)
+    rpi_1_out = rpi_1.stdout
+    print(rpi_1_out)
+    if "Empfangen = 1" in str(rpi_1_out):
+        rpi1_up = True
+    else:
+        rpi1_up = False
+
+    return rpi1_up
+
+@app.get("/get-uptime-rp2")
 def get_uptime():
     host_os = os.name
     print(host_os)
