@@ -30,7 +30,7 @@ def filter_reading(
         von: Optional[datetime] = None,
         bis: Optional[datetime] = None,
         skip: int = 0,
-        limit: int = None
+        limit: int = 100
 ) -> list:
     query = db.query(models.Readings)
     if id is not None:
