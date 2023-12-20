@@ -1,25 +1,34 @@
-    let isCelsius = true;
+      let isCelsius = true;
     let temperatureData = [];
 
-    function generateRandomTemperature() {
-        temperatureData = [
-            {time: '8:00', celsius: 10, fahrenheit: 58},
-            {time: '10:00', celsius: 15, fahrenheit: 69},
-            {time: '12:00', celsius: 20, fahrenheit: 46},
-            {time: '14:00', celsius: 18, fahrenheit: 35},
-            {time: '16:00', celsius: 16, fahrenheit: 50}
-        ];
+    async function callData(data) {
+    try {
+        const response = await fetch("172.20.174.121:8000/api/v1/all-temperatures");
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const values = await response.json();
 
-        temperatureData.forEach((item, index) => {
-            item.celsius = Math.floor(Math.random() * 51) - 10;
-            item.fahrenheit = (item.celsius * 9 / 5) + 32;
+        values.forEach((value) => {
+            console.log(value["temp_c"]);
+            console.log("test");
+            const newItem = {
+                time: value.time,
+                celsius: value.celsius,
+                fahrenheit: value.fahrenheit
+            };
+            data.push(newItem);
         });
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
     }
+}
 
     function toggleTemperature() {
         const chart = document.getElementById('chart');
-        const chartWidth = chart.clientWidth;
-
         //To clear graphic before usage
         chart.innerHTML = '';
 
@@ -95,9 +104,8 @@
             });
 
         }
-        if (chartWidth !== 0) {
-            createPoints();
-        }
+
+        createPoints();
 
         const dataTableBody = document.querySelector('#dataTable tbody');
         dataTableBody.innerHTML = '';
@@ -121,12 +129,12 @@
     });
 
     document.getElementById('refreshButton').addEventListener('click', function() {
-            generateRandomTemperature();
+            temperatureData = callData(temperatureData);
             toggleTemperature();
     });
 
     // Create the graphic by page opening
     window.onload = function() {
-            generateRandomTemperature();
+            temperatureData = callData(temperatureData);
             toggleTemperature();
         };
