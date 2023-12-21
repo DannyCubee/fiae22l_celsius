@@ -169,3 +169,9 @@ def delete_by_client_and_time(db: Session, client: str, time: datetime, skip: in
     entries_to_delete = read_reading_by_client_and_time(db, client=client, time=time, skip=skip, limit=limit)
     for entry in entries_to_delete:
         delete_reading(db, entry.id)
+
+
+def get_recent_readings(db: Session):
+    data = db.query(models.Readings).order_by(desc(models.Readings.id)).limit(30).all()
+    data.reverse()
+    return data

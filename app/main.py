@@ -118,8 +118,8 @@ def launch_index():
 
 
 @app.get("/get-temps-in-timeframe")
-def get_temps_in_timeframe(start: datetime = datetime.now(), end: datetime = datetime.now(), db: Session = Depends(get_db), offset: int = 0, limit: int = 100):
-    data = crud.read_by_Timeframe(db, start, end, skip=offset, limit=limit)
+def get_temps_in_timeframe(start: datetime = datetime.now(), end: datetime = datetime.now(), db: Session = Depends(get_db)):
+    data = crud.get_reading_by_timeframe(db, start, end)
     return data
 
 
@@ -158,3 +158,8 @@ def graph_view():
         render = html.read()
 
     return render
+
+
+@app.get("/recent-readings")
+def recent_readings(db: Session = Depends(get_db)):
+    return crud.get_recent_readings(db)
