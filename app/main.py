@@ -53,6 +53,7 @@ def say_hello():
     return {"Nachricht1": "Hallo",
             "Nachricht2": "Das ist ein API-Call"}
 
+
 @app.post("/post")
 def create_value():
     return {"Nachricht1": "Hallo!",
@@ -83,7 +84,7 @@ def get_both_temperatures_by_id(id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/v1/temerature/{id}")
 def get_temperature_by_id(id: int, is_celsius: bool, db: Session = Depends(get_db)):
-    return crud.read_reading_Temperature(db, id, is_celsius)
+    return crud.read_reading_temperature(db, id, is_celsius)
 
 
 @app.get("/api/v1/get-temps-from-client")
@@ -93,7 +94,7 @@ def get_all_temperatures_from_client(client: str, db: Session = Depends(get_db))
 
 @app.get("/api/v1/get-temps-from-client-and-time")
 def get_temperature_by_client_and_time(time: datetime, client: str, db: Session = Depends(get_db)):
-    return crud.read_reading_by_Client_and_Time(db, client, time)
+    return crud.read_reading_by_client_and_time(db, client, time)
 
 
 @app.put("/api/v1/update_temperature_of_id")
@@ -136,6 +137,7 @@ def get_uptime():
         rpi1_up = False
 
     return rpi1_up
+
 
 @app.get("/get-uptime-rp2")
 def get_uptime():
